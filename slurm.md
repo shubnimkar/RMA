@@ -225,7 +225,21 @@ TO check packages on all nodes no will be 12
 rpm -qa | grep slurm | wc -l
  
 
+on all 3
+mkdir /var/spool/slurm
+chown slurm:slurm /var/spool/slurm
+chmod 755 /var/spool/slurm/
 
+mkdir /var/log/slurm
+chown slurm:slurm /var/log/slurm
+chmod 755 /var/log/slurm/
+chown -R slurm . /var/log/slurm/
 
-
+MASTER: 
+[root@master ~]# touch /var/log/slurm/slurmctld.log
+[root@master ~]# chown slurm:slurm /var/log/slurm/slurmctld.log
+[root@master ~]# touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
+[root@master ~]# chown slurm: /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
+[root@master ~]# cp /etc/slurm/slurm.conf.example /etc/slurm/slurm.conf
+[root@master ~]# vi /etc/slurm/slurm.conf
 
