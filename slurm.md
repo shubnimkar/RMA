@@ -213,8 +213,17 @@ mkdir /home/rpms
 cd /root/rpmbuild/RPMS/x86_64/
 cp * /home/rpms/
 
+on all 3
+[root@master rpms]# yum --nogpgcheck localinstall * -y
 
+on client slurmctld and slurmdbd packages are not req 
 
+[root@client2 rpms]# yum --nogpgcheck localinstall * -y
+[root@rma2 rpms]# yum --nogpgcheck localinstall * -y
+
+TO check packages on all nodes no will be 12
+rpm -qa | grep slurm | wc -l
+ 
 
 
 
