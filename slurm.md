@@ -141,3 +141,39 @@ on master
 
     ssh-keygen -t rsa
     ssh-copy-id root@client address
+
+
+# on all 3
+
+* update host files
+* yum install epel-release -y
+* yum install munge munge-libs munge-devel
+
+# master
+
+[root@master home]# rpm -qa | grep munge
+munge-libs-0.5.11-3.el7.x86_64
+munge-devel-0.5.11-3.el7.x86_64
+munge-0.5.11-3.el7.x86_64
+
+* /usr/sbin/create-munge-key -r
+  
+[root@master home]# /usr/sbin/create-munge-key -r
+Please type on the keyboard, echo move your mouse,
+utilize the disks. This gives the random number generator
+a better chance to gain enough entropy.
+Generating a pseudo-random key using /dev/random completed.
+
+TO check the key 
+
+[root@master home]# ll /etc/munge/
+total 4
+-r--------. 1 munge munge 1024 Jul 13 16:55 munge.key
+
+scp /etc/munge/munge.key client1 client2:/etc/munge/
+
+      on all three
+
+systemctl start munge
+systemctl enable munge
+systemctl status munge
