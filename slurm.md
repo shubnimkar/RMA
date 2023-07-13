@@ -1,17 +1,13 @@
-# Need 3 VM
-
-# Master : 1 NAT HO
-
-# Clients : 2 NAT HO
-
-
-
-
-disable selinux and firewalld 
+# Prerequisite
+* Need 3 VM
+    * Master : 1
+        * Adapters : NAT HO
+    * Clients : 2
+        * Adapters :  NAT HO 
 
 # Configure NFS Server Master
 
-## Conf Firewalld
+### Disable Firewalld & SELinux
 
     systemctl status firewalld
     systemctl stop firewalld
@@ -35,16 +31,17 @@ Here I will be creating a new directory named home in the / partition.
     mkdir /home
 
 #### Allow NFS client to read and write to the created directory.
-
     chmod 777 /home/
 
 #### We have to modify /etc/exports file to make an entry of directory /home that you want to share.
-    
     vi /etc/exports
 
 and add this 
 
-     /home *(rw,sync,no_root_squash)
+     /home *(rw,sync,no_root_squash)  
+     
+     [/home ip needs to be here where clients are there(rw,sync,no_root_squash)]
+
 
 
 #### Export the shared directories using the following command.
@@ -52,7 +49,8 @@ and add this
 
 # Configure NFS client
 
-## Conf Firewalld
+## Disable Firewalld & SELinux
+
     systemctl status firewalld
     systemctl stop firewalld
     systemctl disable firewalld
@@ -65,12 +63,14 @@ and add this
     yum install -y nfs-utils
 
 #### Check NFS Share
+
 Before mounting the NFS share,
 I request you to check the NFS shares available on the NFS server by running the following command on the NFS client.
     
     showmount -e 192.168.100.186
 
 #### Mount NFS Share
+
 Now, create a directory on NFS client to mount the NFS share /home which we have created in the NFS server.
 
     mkdir /mnt/home
@@ -83,6 +83,8 @@ Verify the mounted share on the NFS client using mount command.
 
     mount | grep nfs
 
+OUTPUT: 
+
     [root@RMA3 ~]# mount | grep nfs
     sunrpc on /var/lib/nfs/rpc_pipefs type rpc_pipefs (rw,relatime)
     192.168.100.186:/home on /mnt/home type nfs4 (rw,nosuid,relatime,sync,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.100.188,local_lock=none,addr=192.168.100.186)
@@ -91,6 +93,8 @@ Verify the mounted share on the NFS client using mount command.
 Also, you can use the df -hT command to check the mounted NFS share.
 
     df -hT
+
+![Capture](https://github.com/shubnimkar/RMA/assets/46809421/440a4d3d-dd2b-4f12-b6e1-4a8744cd0c68)
 
 Create a file on the mounted directory to verify the read and write access on NFS share.
 
@@ -135,5 +139,5 @@ Reboot the client machine and check whether the share is automatically mounted o
 
 on master
 
-ssh-keygen -t rsa
-ssh-copy-id root@client address
+    ssh-keygen -t rsa
+    ssh-copy-id root@client address
