@@ -182,3 +182,5 @@ chown munge:munge /etc/munge/munge.key
 systemctl start munge
 systemctl enable munge
 systemctl status munge
+
+
