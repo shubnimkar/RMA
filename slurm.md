@@ -208,6 +208,10 @@ export SLURMUSER=900
 groupadd -g $SLURMUSER slurm
 useradd -m -c "SLURM workload manager" -d /var/lib/slurm -u $SLURMUSER -g slurm -s /bin/bash slurm
 
+ON MASTER
+mkdir /home/rpms
+cd /root/rpmbuild/RPMS/x86_64/
+cp * /home/rpms/
 
 
 
