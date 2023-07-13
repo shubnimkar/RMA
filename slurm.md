@@ -183,4 +183,36 @@ systemctl start munge
 systemctl enable munge
 systemctl status munge
 
+[GET SLURM FROM HERE](https://download.schedmd.com/slurm/slurm-20.11.9.tar.bz2)
+
+ONMASTER 
+wget https://download.schedmd.com/slurm/slurm-20.11.9.tar.bz2
+
+yum install rpm-build -y
+
+[root@master ~]# rpmbuild -ta slurm-20.11.9.tar.bz2 
+error: Failed build dependencies:
+	python3 is needed by slurm-20.11.9-1.el7.x86_64
+	readline-devel is needed by slurm-20.11.9-1.el7.x86_64
+	perl(ExtUtils::MakeMaker) is needed by slurm-20.11.9-1.el7.x86_64
+	pam-devel is needed by slurm-20.11.9-1.el7.x86_64
+
+on all 3
+yum install python3 readline-devel perl-ExtUtils-MakeMaker pam-devel gcc mysql-devel -y
+
+TO BUILD REPO (MASTER
+rpmbuild -ta slurm-20.11.9.tar.bz2 
+
+on all 3 
+export SLURMUSER=900
+groupadd -g $SLURMUSER slurm
+useradd -m -c "SLURM workload manager" -d /var/lib/slurm -u $SLURMUSER -g slurm -s /bin/bash slurm
+
+
+
+
+
+
+
+
 
