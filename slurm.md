@@ -1,0 +1,139 @@
+# Need 3 VM
+
+# Master : 1 NAT HO
+
+# Clients : 2 NAT HO
+
+
+
+
+disable selinux and firewalld 
+
+# Configure NFS Server Master
+
+## Conf Firewalld
+
+    systemctl status firewalld
+    systemctl stop firewalld
+    systemctl disable firewalld
+    systemctl status firewalld
+    
+    setenforce 0
+    getenforce
+
+#### Install NFS Server
+    yum install -y nfs-utils
+
+#### Once the packages are installed, enable and start NFS services.
+    systemctl start nfs-server rpcbind
+    systemctl enable nfs-server rpcbind
+
+#### Create NFS Share
+Now, let’s create a directory to share with the NFS client. 
+Here I will be creating a new directory named home in the / partition.
+
+    mkdir /home
+
+#### Allow NFS client to read and write to the created directory.
+
+    chmod 777 /home/
+
+#### We have to modify /etc/exports file to make an entry of directory /home that you want to share.
+    
+    vi /etc/exports
+
+and add this 
+
+     /home *(rw,sync,no_root_squash)
+
+
+#### Export the shared directories using the following command.
+    exportfs -r
+
+# Configure NFS client
+
+## Conf Firewalld
+    systemctl status firewalld
+    systemctl stop firewalld
+    systemctl disable firewalld
+    systemctl status firewalld
+
+    setenforce 0
+    getenforce
+
+#### Install NFS Client
+    yum install -y nfs-utils
+
+#### Check NFS Share
+Before mounting the NFS share,
+I request you to check the NFS shares available on the NFS server by running the following command on the NFS client.
+    
+    showmount -e 192.168.100.186
+
+#### Mount NFS Share
+Now, create a directory on NFS client to mount the NFS share /home which we have created in the NFS server.
+
+    mkdir /mnt/home
+
+Use below command to mount a NFS share /home from NFS server 192.168.100.186 in /mnt/nfsfileshare on NFS client.
+
+    mount 192.168.100.186:/home /mnt/home
+
+Verify the mounted share on the NFS client using mount command.
+
+    mount | grep nfs
+
+    [root@RMA3 ~]# mount | grep nfs
+    sunrpc on /var/lib/nfs/rpc_pipefs type rpc_pipefs (rw,relatime)
+    192.168.100.186:/home on /mnt/home type nfs4 (rw,nosuid,relatime,sync,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.100.188,local_lock=none,addr=192.168.100.186)
+
+
+Also, you can use the df -hT command to check the mounted NFS share.
+
+    df -hT
+
+Create a file on the mounted directory to verify the read and write access on NFS share.
+
+    touch /mnt/home/test
+    
+#### Automount NFS Shares
+To mount the shares automatically on every reboot, you would need to modify /etc/fstab file of your NFS client.
+    
+    vi /etc/fstab
+
+Add an entry something like below.
+
+     192.168.100.186:/home /mnt/home			nfs 	nosuid,rw,sync,hard,intr 0 0
+
+     [root@rma2 rma2]# cat /etc/fstab
+
+    #
+    # /etc/fstab
+    # Created by anaconda on Thu Jul 13 15:32:36 2023
+    #
+    # Accessible filesystems, by reference, are maintained under '/dev/disk'
+    # See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+    #
+    /dev/mapper/centos-root /                       xfs     defaults        0 0
+    UUID=1b5f2893-aa43-4137-b7c9-bb06a599339d /boot                   xfs     defaults        0 0
+    /dev/mapper/centos-home /home                   xfs     defaults        0 0
+    /dev/mapper/centos-swap swap                    swap    defaults        0 0
+    192.168.100.186:/home /mnt/home			nfs 	nosuid,rw,sync,hard,intr 0 0
+
+
+#### Save and close the file.
+
+Reboot the client machine and check whether the share is automatically mounted or not.
+
+    reboot
+
+#### Verify the mounted share on the NFS client using mount command.
+    mount | grep nfs
+
+
+## PASSWORD LESS SSH
+
+on master
+
+ssh-keygen -t rsa
+ssh-copy-id root@client address
