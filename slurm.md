@@ -171,7 +171,12 @@ total 4
 -r--------. 1 munge munge 1024 Jul 13 16:55 munge.key
 
 scp /etc/munge/munge.key client1 client2:/etc/munge/
+chown munge:munge /etc/munge/
 
+      on all clients
+      
+chown munge:munge /etc/munge/munge.key
+      
       on all three
 
 systemctl start munge
