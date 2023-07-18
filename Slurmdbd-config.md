@@ -1,4 +1,4 @@
-[root@master ~]# yum install mariadb-server mariadb-devel -y
+`[root@master ~]# yum install mariadb-server mariadb-devel -y`
 
     Loaded plugins: fastestmirror, langpacks
     Loading mirror speeds from cached hostfile
@@ -106,7 +106,7 @@
     
     Complete!
     
-[root@master ~]# systemctl enable mariadb
+`[root@master ~]# systemctl enable mariadb`
 
     Created symlink from /etc/systemd/system/multi-user.target.wants/mariadb.service to /usr/lib/systemd/system/mariadb.service.
     [root@master ~]# systemctl start mariadb
@@ -134,7 +134,7 @@
     Jul 18 20:25:22 master systemd[1]: Started MariaDB database server.
     Hint: Some lines were ellipsized, use -l to show in full.
     
-[root@master ~]# mysql
+`[root@master ~]# mysql`
 
     Welcome to the MariaDB monitor.  Commands end with ; or \g.
     Your MariaDB connection id is 2
@@ -185,15 +185,15 @@
     MariaDB [(none)]> quit
     Bye
     
-[root@master ~]# vim  /etc/my.cnf.d/innodb.cnf
+`[root@master ~]# vim  /etc/my.cnf.d/innodb.cnf`
 
-[root@master ~]# systemctl stop mariadb
+`[root@master ~]# systemctl stop mariadb`
 
-[root@master ~]# mv /var/lib/mysql/ib_logfile? /tmp/
+`[root@master ~]# mv /var/lib/mysql/ib_logfile? /tmp/`
 
-[root@master ~]# systemctl start mariadb
+`[root@master ~]# systemctl start mariadb`
 
-[root@master ~]# mysql
+`[root@master ~]# mysql`
 
     Welcome to the MariaDB monitor.  Commands end with ; or \g.
     Your MariaDB connection id is 2
