@@ -573,4 +573,4 @@ TO check packages on all nodes no will be 12
 
  # SLURM RESERVATION CREATION
 
- [SLURM RESERVATION CREATION](https://slurm.schedmd.com/reservations.html#creation)
+ [SLURM RESERVATION CREATION](https://slurm.schedmd.com/reservations.html#creation){:target="_blank" rel="noopener"}
