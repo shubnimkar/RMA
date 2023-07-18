@@ -1,3 +1,7 @@
+### Follow all commands on Master
+
+# Install Maria db 
+
 `[root@master ~]# yum install mariadb-server mariadb-devel -y`
 
     Loaded plugins: fastestmirror, langpacks
@@ -105,7 +109,9 @@
       perl-Net-Daemon.noarch 0:0.48-5.el7                    perl-PlRPC.noarch 0:0.2020-14.el7
     
     Complete!
-    
+
+# Enable mariadb service
+
 `[root@master ~]# systemctl enable mariadb`
 
     Created symlink from /etc/systemd/system/multi-user.target.wants/mariadb.service to /usr/lib/systemd/system/mariadb.service.
@@ -133,7 +139,9 @@
     Jul 18 20:25:20 master mysqld_safe[12884]: 230718 20:25:20 mysqld_safe Starting mysqld daemon with databa...ysql
     Jul 18 20:25:22 master systemd[1]: Started MariaDB database server.
     Hint: Some lines were ellipsized, use -l to show in full.
-    
+
+ # Enter into mariadb for config:
+ 
 `[root@master ~]# mysql`
 
     Welcome to the MariaDB monitor.  Commands end with ; or \g.
@@ -163,7 +171,11 @@
     
     MariaDB [(none)]> quit;
     Bye
-    [root@master ~]# mysql -p -u slurm
+
+# Check the databases grants for the slurm user:
+
+ `[root@master ~]# mysql -p -u slurm`
+    
     Enter password:
     Welcome to the MariaDB monitor.  Commands end with ; or \g.
     Your MariaDB connection id is 3
@@ -184,8 +196,44 @@
     
     MariaDB [(none)]> quit
     Bye
-    
+
+# Create a new file /etc/my.cnf.d/innodb.cnf containing:
+
 `[root@master ~]# vim  /etc/my.cnf.d/innodb.cnf`
+
+    
+
+`[root@master ~]# systemctl stop mariadb`
+
+`[root@master ~]# mv /var/lib/mysql/ib_logfile? /tmp/`
+
+`[root@master ~]# systemctl start mariadb`
+
+`[root@master ~]# mysql`
+
+    Welcome to the MariaDB monitor.  Commands end with ; or \g.
+    Your MariaDB connection id is 2
+    Server version: 5.5.68-MariaDB MariaDB Server
+    
+    Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+    
+    Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+    
+    MariaDB [(none)]> SHOW VARIABLES LIKE 'innodb_buffer_pool_size';
+    +-------------------------+------------+
+    | Variable_name           | Value      |
+    +-------------------------+------------+
+    | innodb_buffer_pool_size | 1073741824 |
+    +-------------------------+------------+
+    1 row in set (0.00 sec)
+    
+    MariaDB [(none)]> exit
+    Bye
+
+
+# Create slurmdbd configuration file:
+
+`[root@master ~]# vim /etc/slurm/slurmdbd.conf`
 
     #
     # Example slurmdbd.conf file.
@@ -225,44 +273,18 @@
     StoragePass=1234
     StorageUser=slurm
     StorageLoc=slurm_accounts
-
-
-`[root@master ~]# systemctl stop mariadb`
-
-`[root@master ~]# mv /var/lib/mysql/ib_logfile? /tmp/`
-
-`[root@master ~]# systemctl start mariadb`
-
-`[root@master ~]# mysql`
-
-    Welcome to the MariaDB monitor.  Commands end with ; or \g.
-    Your MariaDB connection id is 2
-    Server version: 5.5.68-MariaDB MariaDB Server
     
-    Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
-    
-    Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-    
-    MariaDB [(none)]> SHOW VARIABLES LIKE 'innodb_buffer_pool_size';
-    +-------------------------+------------+
-    | Variable_name           | Value      |
-    +-------------------------+------------+
-    | innodb_buffer_pool_size | 1073741824 |
-    +-------------------------+------------+
-    1 row in set (0.00 sec)
-    
-    MariaDB [(none)]> exit
-    Bye
-    
-`[root@master ~]# vim /etc/slurm/slurmdbd.conf`
+# Set up files and permissions:
 
-`[root@master ~]# chown slurm: /etc/slurm/slurmdbd.conf`
+    [root@master ~]# chown slurm: /etc/slurm/slurmdbd.conf
+    
+    [root@master ~]# chmod 600 /etc/slurm/slurmdbd.conf
+    
+    [root@master ~]# touch /var/log/slurmdbd.log
+    
+    [root@master ~]# chown slurm: /var/log/slurmdbd.log
 
-`[root@master ~]# chmod 600 /etc/slurm/slurmdbd.conf`
-
-`[root@master ~]# touch /var/log/slurmdbd.log`
-
-`[root@master ~]# chown slurm: /var/log/slurmdbd.log`
+# Fire slurndbd manually to see the log:
 
 `[root@master ~]# slurmdbd -D -vvv`
 
@@ -324,33 +346,40 @@
     slurmdbd: debug:  rpc_mgr shutting down
     slurmdbd: Unable to remove pidfile '/var/run/slurmdbd.pid': Permission denied
 
-`[root@master ~]# systemctl enable slurmdbd`
 
-`[root@master ~]# systemctl start slurmdbd`
 
-`[root@master ~]# systemctl status slurmdbd`
+# Start the slurmdbd service:
 
-    ● slurmdbd.service - Slurm DBD accounting daemon
-       Loaded: loaded (/usr/lib/systemd/system/slurmdbd.service; enabled; vendor preset: disabled)
-       Active: active (running) since Tue 2023-07-18 20:39:06 IST; 712ms ago
-     Main PID: 13671 (slurmdbd)
-        Tasks: 5
-       CGroup: /system.slice/slurmdbd.service
-               └─13671 /usr/sbin/slurmdbd -D
-
-    Jul 18 20:39:06 master systemd[1]: Started Slurm DBD accounting daemon.
-
-`[root@master ~]# systemctl enable slurmctld.service`
-
-`[root@master ~]# systemctl start slurmctld.service`
-
-`[root@master ~]# systemctl status slurmctld.service`
-
-    ● slurmctld.service - Slurm controller daemon
-       Loaded: loaded (/usr/lib/systemd/system/slurmctld.service; enabled; vendor preset: disabled)
-       Active: active (running) since Tue 2023-07-18 16:44:35 IST; 3h 54min ago
-     Main PID: 3867 (slurmctld)
-       CGroup: /system.slice/slurmctld.service
-               └─3867 /usr/sbin/slurmctld -D
+    [root@master ~]# systemctl enable slurmdbd
     
-    Jul 18 16:44:35 master systemd[1]: Started Slurm controller daemon.
+    [root@master ~]# systemctl start slurmdbd
+    
+    [root@master ~]# systemctl status slurmdbd
+    
+        ● slurmdbd.service - Slurm DBD accounting daemon
+           Loaded: loaded (/usr/lib/systemd/system/slurmdbd.service; enabled; vendor preset: disabled)
+           Active: active (running) since Tue 2023-07-18 20:39:06 IST; 712ms ago
+         Main PID: 13671 (slurmdbd)
+            Tasks: 5
+           CGroup: /system.slice/slurmdbd.service
+                   └─13671 /usr/sbin/slurmdbd -D
+    
+        Jul 18 20:39:06 master systemd[1]: Started Slurm DBD accounting daemon.
+
+# Start the slurmctld service:
+
+ 
+    [root@master ~]# systemctl enable slurmctld.service
+    
+    [root@master ~]# systemctl start slurmctld.service
+    
+    [root@master ~]# systemctl status slurmctld.service
+    
+        ● slurmctld.service - Slurm controller daemon
+           Loaded: loaded (/usr/lib/systemd/system/slurmctld.service; enabled; vendor preset: disabled)
+           Active: active (running) since Tue 2023-07-18 16:44:35 IST; 3h 54min ago
+         Main PID: 3867 (slurmctld)
+           CGroup: /system.slice/slurmctld.service
+                   └─3867 /usr/sbin/slurmctld -D
+        
+        Jul 18 16:44:35 master systemd[1]: Started Slurm controller daemon.
