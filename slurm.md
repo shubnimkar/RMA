@@ -254,12 +254,12 @@ TO check packages on all nodes no will be 12
 
 ### MASTER: 
 
-[root@master ~]# touch /var/log/slurm/slurmctld.log
-[root@master ~]# chown slurm:slurm /var/log/slurm/slurmctld.log
-[root@master ~]# touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
-[root@master ~]# chown slurm: /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
-[root@master ~]# cp /etc/slurm/slurm.conf.example /etc/slurm/slurm.conf
-[root@master ~]# vi /etc/slurm/slurm.conf
+	[root@master ~]# touch /var/log/slurm/slurmctld.log
+	[root@master ~]# chown slurm:slurm /var/log/slurm/slurmctld.log
+	[root@master ~]# touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
+	[root@master ~]# chown slurm: /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
+	[root@master ~]# cp /etc/slurm/slurm.conf.example /etc/slurm/slurm.conf
+	[root@master ~]# vi /etc/slurm/slurm.conf
 
 		#
 		# Example slurm.conf file. Please run configurator.html
