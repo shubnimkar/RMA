@@ -407,6 +407,23 @@ TO check packages on all nodes no will be 12
 	[root@master ~]# slurmctld -Dvv
 
 
+### Submit jobs on master:
+
+* -w: name of node
+* --pty: shell it wants
+
+* For single client:
+   
+		[root@master ~]# srun -w client1 --pty /bin/bash
+		[root@client1 ~]#
+
+* For multiclient:
+  
+		[root@master ~]# srun -w client[1-2] --pty /bin/bash
+		[root@client1 ~]#
+
+
+
 
 
 
