@@ -391,6 +391,9 @@ TO check packages on all nodes no will be 12
 	PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 	standard*    up   infinite      2   idle client[1-2]
 
+	[root@master ~]# sinfo -R
+	REASON               USER      TIMESTAMP           NODELIST
+
 #### if nodes are down:
 
 	scontrol update node <nodename> state=idle
