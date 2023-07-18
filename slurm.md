@@ -441,6 +441,8 @@ TO check packages on all nodes no will be 12
 
 ### Submit jobs in batch via script
 
+#### Script
+
 	[root@master ~]# cat demo.sh
 
 		#!/bin/bash
@@ -454,6 +456,11 @@ TO check packages on all nodes no will be 12
 		#SBATCH --output=error%j.log   # Standard error log
 		date
 		sleep 3000
+
+### To submit job via sbatch
+
+### When jobs are running `squeue` and `sinfo` state
+
 
 	[root@master ~]# sbatch demo.sh
 	Submitted batch job 7
@@ -473,4 +480,12 @@ TO check packages on all nodes no will be 12
 	        JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
 	            7  standard   my_job     root  R       3:48      2 client[1-2]
 
+### When no jobs are running `squeue` and `sinfo` state
+
+	[root@master ~]# squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	     
+	[root@master ~]# sinfo
+	PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+	standard*    up   infinite      2   idle client[1-2]
 
