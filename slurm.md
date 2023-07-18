@@ -570,3 +570,7 @@ TO check packages on all nodes no will be 12
 	[root@master ~]# sshare
 	             Account       User  RawShares  NormShares    RawUsage  EffectvUsage  FairShare
 	-------------------- ---------- ---------- ----------- ----------- ------------- ----------
+
+ # SLURM RESERVATION CREATION
+
+ [SLURM RESERVATION CREATION](https://slurm.schedmd.com/reservations.html#creation)
