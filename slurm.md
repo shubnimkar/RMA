@@ -489,3 +489,84 @@ TO check packages on all nodes no will be 12
 	PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 	standard*    up   infinite      2   idle client[1-2]
 
+### To see job status in deep
+
+	[root@master ~]# sbatch demo.sh
+	Submitted batch job 8
+ 
+	[root@master ~]# squeue
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	                 8  standard   my_job     root  R       0:06      2 client[1-2]
+		  
+	[root@master ~]# scontrol show job 8
+	
+ 	JobId=8 JobName=my_job
+	   UserId=root(0) GroupId=root(0) MCS_label=N/A
+	   Priority=4294901753 Nice=0 Account=(null) QOS=(null)
+	   `JobState=RUNNING` Reason=None Dependency=(null)
+	   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+	   RunTime=00:00:26 TimeLimit=00:05:00 TimeMin=N/A
+	   SubmitTime=2023-07-18T17:49:05 EligibleTime=2023-07-18T17:49:05
+	   AccrueTime=2023-07-18T17:49:05
+	   StartTime=2023-07-18T17:49:05 EndTime=2023-07-18T17:54:05 Deadline=N/A
+	   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2023-07-18T17:49:05
+	   Partition=standard AllocNode:Sid=master:4060
+	   ReqNodeList=(null) ExcNodeList=(null)
+	   NodeList=client[1-2]
+	   BatchHost=client1
+	   NumNodes=2 NumCPUs=2 NumTasks=2 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+	   TRES=cpu=2,node=2,billing=2
+	   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+	   MinCPUsNode=1 MinMemoryNode=0 MinTmpDiskNode=0
+	   Features=(null) DelayBoot=00:00:00
+	   OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null)
+	   Command=/root/demo.sh
+	   WorkDir=/root
+	   StdErr=/root/error8.log
+	   StdIn=/dev/null
+	   StdOut=/root/error8.log
+	   Power=
+	   NtasksPerTRES:0
+    
+### To cancel jobs
+
+	[root@master ~]# scancel 8
+ 
+	[root@master ~]# squeue
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	      
+	[root@master ~]# scontrol show job 8
+ 
+	JobId=8 JobName=my_job
+	   UserId=root(0) GroupId=root(0) MCS_label=N/A
+	   Priority=4294901753 Nice=0 Account=(null) QOS=(null)
+	   `JobState=CANCELLED` Reason=None Dependency=(null)
+	   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:15
+	   RunTime=00:00:46 TimeLimit=00:05:00 TimeMin=N/A
+	   SubmitTime=2023-07-18T17:49:05 EligibleTime=2023-07-18T17:49:05
+	   AccrueTime=2023-07-18T17:49:05
+	   StartTime=2023-07-18T17:49:05 EndTime=2023-07-18T17:49:51 Deadline=N/A
+	   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2023-07-18T17:49:05
+	   Partition=standard AllocNode:Sid=master:4060
+	   ReqNodeList=(null) ExcNodeList=(null)
+	   NodeList=client[1-2]
+	   BatchHost=client1
+	   NumNodes=2 NumCPUs=2 NumTasks=2 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+	   TRES=cpu=2,node=2,billing=2
+	   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+	   MinCPUsNode=1 MinMemoryNode=0 MinTmpDiskNode=0
+	   Features=(null) DelayBoot=00:00:00
+	   OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null)
+	   Command=/root/demo.sh
+	   WorkDir=/root
+	   StdErr=/root/error8.log
+	   StdIn=/dev/null
+	   StdOut=/root/error8.log
+	   Power=
+	   NtasksPerTRES:0
+
+### To see user account
+
+	[root@master ~]# sshare
+	             Account       User  RawShares  NormShares    RawUsage  EffectvUsage  FairShare
+	-------------------- ---------- ---------- ----------- ----------- ------------- ----------
