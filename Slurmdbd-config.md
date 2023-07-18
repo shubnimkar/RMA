@@ -187,6 +187,46 @@
     
 `[root@master ~]# vim  /etc/my.cnf.d/innodb.cnf`
 
+    #
+    # Example slurmdbd.conf file.
+    #
+    # See the slurmdbd.conf man page for more information.
+    #
+    # Archive info
+    #ArchiveJobs=yes
+    #ArchiveDir="/tmp"
+    #ArchiveSteps=yes
+    #ArchiveScript=
+    #JobPurge=12
+    #StepPurge=1
+    #
+    # Authentication info
+    AuthType=auth/munge
+    #AuthInfo=/var/run/munge/munge.socket.2
+    #
+    # slurmDBD info
+    DbdAddr=localhost
+    DbdHost=localhost
+    #DbdPort=6819
+    SlurmUser=slurm
+    #MessageTimeout=300
+    DebugLevel=verbose
+    #DefaultQOS=normal,standby
+    LogFile=/var/log/slurm/slurmdbd.log
+    PidFile=/var/run/slurmdbd.pid
+    #PluginDir=/usr/lib/slurm
+    #PrivateData=accounts,users,usage,jobs
+    #TrackWCKey=yes
+    #
+    # Database info
+    StorageType=accounting_storage/mysql
+    #StorageHost=localhost
+    #StoragePort=1234
+    StoragePass=1234
+    StorageUser=slurm
+    StorageLoc=slurm_accounts
+
+
 `[root@master ~]# systemctl stop mariadb`
 
 `[root@master ~]# mv /var/lib/mysql/ib_logfile? /tmp/`
@@ -214,77 +254,75 @@
     MariaDB [(none)]> exit
     Bye
     
-[root@master ~]# vim /etc/slurm/slurmdbd.conf
-[root@master ~]# chown slurm: /etc/slurm/slurmdbd.conf
-[root@master ~]# chmod 600 /etc/slurm/slurmdbd.conf
-[root@master ~]# touch /var/log/slurmdbd.log
-[root@master ~]# chown slurm: /var/log/slurmdbd.log
-[root@master ~]# slurmdbd -D -vvv
-slurmdbd: fatal: StorageType must be specified
-[root@master ~]# slurmdbd -D -vv
-slurmdbd: fatal: StorageType must be specified
-[root@master ~]# vim /etc/slurm/slurmdbd.conf
-slurmdbd.conf          slurmdbd.conf.example
-[root@master ~]# vim /etc/slurm/slurmdbd.conf.example
-[root@master ~]# vim /etc/slurm/slurmdbd.conf
-[root@master ~]# slurmdbd -D -vvv
-slurmdbd: debug:  Log file re-opened
-slurmdbd: debug:  auth/munge: init: Munge authentication plugin loaded
-slurmdbd: debug2: accounting_storage/as_mysql: init: mysql_connect() called for db slurm_accounts
-slurmdbd: debug2: Attempting to connect to localhost:3306
-slurmdbd: accounting_storage/as_mysql: _check_mysql_concat_is_sane: MySQL server version is: 5.5.68-MariaDB
-slurmdbd: debug2: accounting_storage/as_mysql: _check_database_variables: innodb_buffer_pool_size: 1073741824
-slurmdbd: debug2: accounting_storage/as_mysql: _check_database_variables: innodb_log_file_size: 67108864
-slurmdbd: debug2: accounting_storage/as_mysql: _check_database_variables: innodb_lock_wait_timeout: 900
-slurmdbd: accounting_storage/as_mysql: init: Accounting storage MYSQL plugin loaded
-slurmdbd: debug2: ArchiveDir        = /tmp
-slurmdbd: debug2: ArchiveScript     = (null)
-slurmdbd: debug2: AuthAltTypes      = (null)
-slurmdbd: debug2: AuthAltParameters = (null)
-slurmdbd: debug2: AuthInfo          = (null)
-slurmdbd: debug2: AuthType          = auth/munge
-slurmdbd: debug2: CommitDelay       = 0
-slurmdbd: debug2: CommunicationParameters       = (null)
-slurmdbd: debug2: DbdAddr           = localhost
-slurmdbd: debug2: DbdBackupHost     = (null)
-slurmdbd: debug2: DbdHost           = localhost
-slurmdbd: debug2: DbdPort           = 6819
-slurmdbd: debug2: DebugFlags        = (null)
-slurmdbd: debug2: DebugLevel        = 6
-slurmdbd: debug2: DebugLevelSyslog  = 10
-slurmdbd: debug2: DefaultQOS        = (null)
-slurmdbd: debug2: LogFile           = /var/log/slurm/slurmdbd.log
-slurmdbd: debug2: MessageTimeout    = 10
-slurmdbd: debug2: Parameters        = (null)
-slurmdbd: debug2: PidFile           = /var/run/slurmdbd.pid
-slurmdbd: debug2: PluginDir         = /usr/lib64/slurm
-slurmdbd: debug2: PrivateData       = none
-slurmdbd: debug2: PurgeEventAfter   = NONE
-slurmdbd: debug2: PurgeJobAfter     = NONE
-slurmdbd: debug2: PurgeResvAfter    = NONE
-slurmdbd: debug2: PurgeStepAfter    = NONE
-slurmdbd: debug2: PurgeSuspendAfter = NONE
-slurmdbd: debug2: PurgeTXNAfter = NONE
-slurmdbd: debug2: PurgeUsageAfter = NONE
-slurmdbd: debug2: SlurmUser         = slurm(900)
-slurmdbd: debug2: StorageBackupHost = (null)
-slurmdbd: debug2: StorageHost       = localhost
-slurmdbd: debug2: StorageLoc        = slurm_accounts
-slurmdbd: debug2: StorageParameters = (null)
-slurmdbd: debug2: StoragePort       = 3306
-slurmdbd: debug2: StorageType       = accounting_storage/mysql
-slurmdbd: debug2: StorageUser       = slurm
-slurmdbd: debug2: TCPTimeout        = 2
-slurmdbd: debug2: TrackWCKey        = 0
-slurmdbd: debug2: TrackSlurmctldDown= 0
-slurmdbd: debug2: accounting_storage/as_mysql: acct_storage_p_get_connection: acct_storage_p_get_connection: request new connection 1
-slurmdbd: debug2: Attempting to connect to localhost:3306
-slurmdbd: slurmdbd version 20.11.9 started
-slurmdbd: debug2: running rollup at Tue Jul 18 20:38:50 2023
-slurmdbd: debug2: accounting_storage/as_mysql: as_mysql_roll_usage: Everything rolled up
-^Cslurmdbd: Terminate signal (SIGINT or SIGTERM) received
-slurmdbd: debug:  rpc_mgr shutting down
-slurmdbd: Unable to remove pidfile '/var/run/slurmdbd.pid': Permission denied
+`[root@master ~]# vim /etc/slurm/slurmdbd.conf`
+
+`[root@master ~]# chown slurm: /etc/slurm/slurmdbd.conf`
+
+`[root@master ~]# chmod 600 /etc/slurm/slurmdbd.conf`
+
+`[root@master ~]# touch /var/log/slurmdbd.log`
+
+`[root@master ~]# chown slurm: /var/log/slurmdbd.log`
+
+`[root@master ~]# slurmdbd -D -vvv`
+
+    slurmdbd: debug:  Log file re-opened
+    slurmdbd: debug:  auth/munge: init: Munge authentication plugin loaded
+    slurmdbd: debug2: accounting_storage/as_mysql: init: mysql_connect() called for db slurm_accounts
+    slurmdbd: debug2: Attempting to connect to localhost:3306
+    slurmdbd: accounting_storage/as_mysql: _check_mysql_concat_is_sane: MySQL server version is: 5.5.68-MariaDB
+    slurmdbd: debug2: accounting_storage/as_mysql: _check_database_variables: innodb_buffer_pool_size: 1073741824
+    slurmdbd: debug2: accounting_storage/as_mysql: _check_database_variables: innodb_log_file_size: 67108864
+    slurmdbd: debug2: accounting_storage/as_mysql: _check_database_variables: innodb_lock_wait_timeout: 900
+    slurmdbd: accounting_storage/as_mysql: init: Accounting storage MYSQL plugin loaded
+    slurmdbd: debug2: ArchiveDir        = /tmp
+    slurmdbd: debug2: ArchiveScript     = (null)
+    slurmdbd: debug2: AuthAltTypes      = (null)
+    slurmdbd: debug2: AuthAltParameters = (null)
+    slurmdbd: debug2: AuthInfo          = (null)
+    slurmdbd: debug2: AuthType          = auth/munge
+    slurmdbd: debug2: CommitDelay       = 0
+    slurmdbd: debug2: CommunicationParameters       = (null)
+    slurmdbd: debug2: DbdAddr           = localhost
+    slurmdbd: debug2: DbdBackupHost     = (null)
+    slurmdbd: debug2: DbdHost           = localhost
+    slurmdbd: debug2: DbdPort           = 6819
+    slurmdbd: debug2: DebugFlags        = (null)
+    slurmdbd: debug2: DebugLevel        = 6
+    slurmdbd: debug2: DebugLevelSyslog  = 10
+    slurmdbd: debug2: DefaultQOS        = (null)
+    slurmdbd: debug2: LogFile           = /var/log/slurm/slurmdbd.log
+    slurmdbd: debug2: MessageTimeout    = 10
+    slurmdbd: debug2: Parameters        = (null)
+    slurmdbd: debug2: PidFile           = /var/run/slurmdbd.pid
+    slurmdbd: debug2: PluginDir         = /usr/lib64/slurm
+    slurmdbd: debug2: PrivateData       = none
+    slurmdbd: debug2: PurgeEventAfter   = NONE
+    slurmdbd: debug2: PurgeJobAfter     = NONE
+    slurmdbd: debug2: PurgeResvAfter    = NONE
+    slurmdbd: debug2: PurgeStepAfter    = NONE
+    slurmdbd: debug2: PurgeSuspendAfter = NONE
+    slurmdbd: debug2: PurgeTXNAfter = NONE
+    slurmdbd: debug2: PurgeUsageAfter = NONE
+    slurmdbd: debug2: SlurmUser         = slurm(900)
+    slurmdbd: debug2: StorageBackupHost = (null)
+    slurmdbd: debug2: StorageHost       = localhost
+    slurmdbd: debug2: StorageLoc        = slurm_accounts
+    slurmdbd: debug2: StorageParameters = (null)
+    slurmdbd: debug2: StoragePort       = 3306
+    slurmdbd: debug2: StorageType       = accounting_storage/mysql
+    slurmdbd: debug2: StorageUser       = slurm
+    slurmdbd: debug2: TCPTimeout        = 2
+    slurmdbd: debug2: TrackWCKey        = 0
+    slurmdbd: debug2: TrackSlurmctldDown= 0
+    slurmdbd: debug2: accounting_storage/as_mysql: acct_storage_p_get_connection: acct_storage_p_get_connection: request new connection 1
+    slurmdbd: debug2: Attempting to connect to localhost:3306
+    slurmdbd: slurmdbd version 20.11.9 started
+    slurmdbd: debug2: running rollup at Tue Jul 18 20:38:50 2023
+    slurmdbd: debug2: accounting_storage/as_mysql: as_mysql_roll_usage: Everything rolled up
+    ^Cslurmdbd: Terminate signal (SIGINT or SIGTERM) received
+    slurmdbd: debug:  rpc_mgr shutting down
+    slurmdbd: Unable to remove pidfile '/var/run/slurmdbd.pid': Permission denied
 
 [root@master ~]# systemctl enable slurmdbd
 
