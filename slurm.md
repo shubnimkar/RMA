@@ -18,22 +18,27 @@
     getenforce
 
 #### Install NFS Server
+
     yum install -y nfs-utils
 
 #### Once the packages are installed, enable and start NFS services.
+
     systemctl start nfs-server rpcbind
     systemctl enable nfs-server rpcbind
 
 #### Create NFS Share
+
 Now, let’s create a directory to share with the NFS client. 
 Here I will be creating a new directory named home in the / partition.
 
     mkdir /home
 
 #### Allow NFS client to read and write to the created directory.
+
     chmod 777 /home/
 
 #### We have to modify /etc/exports file to make an entry of directory /home that you want to share.
+
     vi /etc/exports
 
 and add this 
@@ -45,6 +50,7 @@ and add this
 
 
 #### Export the shared directories using the following command.
+
     exportfs -r
 
 # Configure NFS client
@@ -60,6 +66,7 @@ and add this
     getenforce
 
 #### Install NFS Client
+
     yum install -y nfs-utils
 
 #### Check NFS Share
@@ -101,6 +108,7 @@ Create a file on the mounted directory to verify the read and write access on NF
     touch /mnt/home/test
     
 #### Automount NFS Shares
+
 To mount the shares automatically on every reboot, you would need to modify /etc/fstab file of your NFS client.
     
     vi /etc/fstab
@@ -132,6 +140,7 @@ Reboot the client machine and check whether the share is automatically mounted o
     reboot
 
 #### Verify the mounted share on the NFS client using mount command.
+
     mount | grep nfs
 
 
@@ -151,92 +160,100 @@ Reboot the client machine and check whether the share is automatically mounted o
 
 ### master
 
-[root@master home]# rpm -qa | grep munge
-munge-libs-0.5.11-3.el7.x86_64
-munge-devel-0.5.11-3.el7.x86_64
-munge-0.5.11-3.el7.x86_64
+		[root@master home]# rpm -qa | grep munge
+		munge-libs-0.5.11-3.el7.x86_64
+		munge-devel-0.5.11-3.el7.x86_64
+		munge-0.5.11-3.el7.x86_64
 
 * /usr/sbin/create-munge-key -r
   
-[root@master home]# /usr/sbin/create-munge-key -r
-Please type on the keyboard, echo move your mouse,
-utilize the disks. This gives the random number generator
-a better chance to gain enough entropy.
-Generating a pseudo-random key using /dev/random completed.
+		[root@master home]# /usr/sbin/create-munge-key -r
+		Please type on the keyboard, echo move your mouse,
+		utilize the disks. This gives the random number generator
+		a better chance to gain enough entropy.
+		Generating a pseudo-random key using /dev/random completed.
 
 ### To check the key 
 
-[root@master home]# ll /etc/munge/
-total 4
--r--------. 1 munge munge 1024 Jul 13 16:55 munge.key
+		[root@master home]# ll /etc/munge/
+		total 4
+		-r--------. 1 munge munge 1024 Jul 13 16:55 munge.key
+		
+		scp /etc/munge/munge.key client1 client2:/etc/munge/
+		chown munge:munge /etc/munge/
 
-scp /etc/munge/munge.key client1 client2:/etc/munge/
-chown munge:munge /etc/munge/
-
-      on all clients
+### on all clients
       
-chown munge:munge /etc/munge/munge.key
+	chown munge:munge /etc/munge/munge.key
       
-      on all three
+### on all three
 
-systemctl start munge
-systemctl enable munge
-systemctl status munge
+	systemctl start munge
+	systemctl enable munge
+	systemctl status munge
 
 [GET SLURM FROM HERE](https://download.schedmd.com/slurm/slurm-20.11.9.tar.bz2)
 
 ### ONMASTER 
 
-wget https://download.schedmd.com/slurm/slurm-20.11.9.tar.bz2
+	wget https://download.schedmd.com/slurm/slurm-20.11.9.tar.bz2
+	
+	yum install rpm-build -y
 
-yum install rpm-build -y
-
-[root@master ~]# rpmbuild -ta slurm-20.11.9.tar.bz2 
-error: Failed build dependencies:
-	python3 is needed by slurm-20.11.9-1.el7.x86_64
-	readline-devel is needed by slurm-20.11.9-1.el7.x86_64
-	perl(ExtUtils::MakeMaker) is needed by slurm-20.11.9-1.el7.x86_64
-	pam-devel is needed by slurm-20.11.9-1.el7.x86_64
+	[root@master ~]# rpmbuild -ta slurm-20.11.9.tar.bz2 
+	error: Failed build dependencies:
+		python3 is needed by slurm-20.11.9-1.el7.x86_64
+		readline-devel is needed by slurm-20.11.9-1.el7.x86_64
+		perl(ExtUtils::MakeMaker) is needed by slurm-20.11.9-1.el7.x86_64
+		pam-devel is needed by slurm-20.11.9-1.el7.x86_64
 
 ### on all 3
-yum install python3 readline-devel perl-ExtUtils-MakeMaker pam-devel gcc mysql-devel -y
+
+	yum install python3 readline-devel perl-ExtUtils-MakeMaker pam-devel gcc mysql-devel -y
 
 TO BUILD REPO (MASTER
-rpmbuild -ta slurm-20.11.9.tar.bz2 
+
+	rpmbuild -ta slurm-20.11.9.tar.bz2 
 
 ### on all 3 
-export SLURMUSER=900
-groupadd -g $SLURMUSER slurm
-useradd -m -c "SLURM workload manager" -d /var/lib/slurm -u $SLURMUSER -g slurm -s /bin/bash slurm
 
-### vON MASTER
-mkdir /home/rpms
-cd /root/rpmbuild/RPMS/x86_64/
-cp * /home/rpms/
+	export SLURMUSER=900
+	groupadd -g $SLURMUSER slurm
+	useradd -m -c "SLURM workload manager" -d /var/lib/slurm -u $SLURMUSER -g slurm -s /bin/bash slurm
+
+### ON MASTER
+
+	mkdir /home/rpms
+	cd /root/rpmbuild/RPMS/x86_64/
+	cp * /home/rpms/
 
 ### on all 3
-[root@master rpms]# yum --nogpgcheck localinstall * -y
+
+	[root@master rpms]# yum --nogpgcheck localinstall * -y
 
 on client slurmctld and slurmdbd packages are not req 
 
-[root@client2 rpms]# yum --nogpgcheck localinstall * -y
-[root@rma2 rpms]# yum --nogpgcheck localinstall * -y
+	[root@client2 rpms]# yum --nogpgcheck localinstall * -y
+	[root@rma2 rpms]# yum --nogpgcheck localinstall * -y
 
 TO check packages on all nodes no will be 12
-rpm -qa | grep slurm | wc -l
+
+	rpm -qa | grep slurm | wc -l
  
 
 ### on all 3
-mkdir /var/spool/slurm
-chown slurm:slurm /var/spool/slurm
-chmod 755 /var/spool/slurm/
 
-mkdir /var/log/slurm
-chown slurm:slurm /var/log/slurm
-chmod 755 /var/log/slurm/
-chown -R slurm . /var/log/slurm/
+	mkdir /var/spool/slurm
+	chown slurm:slurm /var/spool/slurm
+	chmod 755 /var/spool/slurm/
+
+	mkdir /var/log/slurm
+	chown slurm:slurm /var/log/slurm
+	chmod 755 /var/log/slurm/
+	chown -R slurm . /var/log/slurm/
 
 ### MASTER: 
+
 [root@master ~]# touch /var/log/slurm/slurmctld.log
 [root@master ~]# chown slurm:slurm /var/log/slurm/slurmctld.log
 [root@master ~]# touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
@@ -340,43 +357,47 @@ chown -R slurm . /var/log/slurm/
 		NodeName=client2 CPUs=2 Boards=1 SocketsPerBoard=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=5666 State=UNKNOWN
 		PartitionName=standard Nodes=ALL Default=YES MaxTime=INFINITE State=UP
 
-[root@master ~]# scp /etc/slurm/slurm.conf client1:/etc/slurm/
-slurm.conf                                                                                                                                                                       100% 2188     2.5MB/s   00:00    
-[root@master ~]# scp /etc/slurm/slurm.conf client2:/etc/slurm/
-slurm.conf                                                                                                                                                                       100% 2188   297.3KB/s   00:00    
-[root@master ~]# systemctl start slurmctld
-[root@master ~]# systemctl enable slurmctld
-[root@master ~]# systemctl status slurmctld
+
+
+
+	[root@master ~]# scp /etc/slurm/slurm.conf client1:/etc/slurm/
+	slurm.conf                                                                                                                                                                       100% 2188     2.5MB/s   00:00    
+	[root@master ~]# scp /etc/slurm/slurm.conf client2:/etc/slurm/
+	slurm.conf                                                                                                                                                                       100% 2188   297.3KB/s   00:00    
+	[root@master ~]# systemctl start slurmctld
+	[root@master ~]# systemctl enable slurmctld
+	[root@master ~]# systemctl status slurmctld
 
 
 
 
-[root@rma2 ~]# slurmd -C
-NodeName=client1 CPUs=2 Boards=1 SocketsPerBoard=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=5666
-UpTime=0-03:28:53
-[root@rma2 ~]# systemctl start slurmd
-[root@rma2 ~]# systemctl enable slurmd
-[root@rma2 ~]# systemctl status slurmd
+	[root@rma2 ~]# slurmd -C
+	NodeName=client1 CPUs=2 Boards=1 SocketsPerBoard=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=5666
+	UpTime=0-03:28:53
+	[root@rma2 ~]# systemctl start slurmd
+	[root@rma2 ~]# systemctl enable slurmd
+	[root@rma2 ~]# systemctl status slurmd
 
-[root@client2 ~]# slurmd -C
-NodeName=client2 CPUs=2 Boards=1 SocketsPerBoard=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=5666
-UpTime=0-03:28:58
-[root@client2 ~]# systemctl start slurmd
-[root@client2 ~]# systemctl enable slurmd
-[root@client2 ~]# systemctl status slurmd
+	[root@client2 ~]# slurmd -C
+	NodeName=client2 CPUs=2 Boards=1 SocketsPerBoard=2 CoresPerSocket=1 ThreadsPerCore=1 RealMemory=5666
+	UpTime=0-03:28:58
+	[root@client2 ~]# systemctl start slurmd
+	[root@client2 ~]# systemctl enable slurmd
+	[root@client2 ~]# systemctl status slurmd
 
 #### To check is clients are online :
 
-[root@master ~]# sinfo
-PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-standard*    up   infinite      2   idle client[1-2]
+	[root@master ~]# sinfo
+	PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+	standard*    up   infinite      2   idle client[1-2]
 
 #### if nodes are down:
 
-scontrol update node <nodename> state=idle
+	scontrol update node <nodename> state=idle
 
 * if it shows `down*`
-restart slurmd and then fire above command
+
+		restart slurmd and then fire above command
  
 
 
