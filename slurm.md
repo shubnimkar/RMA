@@ -406,6 +406,8 @@ TO check packages on all nodes no will be 12
 
 	[root@master ~]# slurmctld -Dvv
 
+##JOBS SUBMISSION:
+
 
 ### Submit jobs on master:
 
@@ -422,9 +424,49 @@ TO check packages on all nodes no will be 12
 		[root@master ~]# srun -w client[1-2] --pty /bin/bash
 		[root@client1 ~]#
 
+### To put any node in maintenance
 
+	[root@master ~]# scontrol update node=client1 state=down reason=main
+	[root@master ~]# sinfo -R
+	REASON               USER      TIMESTAMP           NODELIST
+	main                 root      2023-07-18T17:14:10 client1
 
+### to remove from it
 
+	[root@master ~]# scontrol update node=client1 state=resume
+	[root@master ~]# sinfo -R
+	REASON               USER      TIMESTAMP           NODELIST
+	
+	### SBATCH
 
+### Submit jobs in batch via script
+
+	[root@master ~]# cat demo.sh
+
+		#!/bin/bash
+		#SBATCH --partition=standard  #chose the partition
+		#SBATCH --job-name=my_job
+		#SBATCH --nodes=2              # Number of nodes
+		#SBATCH --ntasks=1             # Number of tasks across all nodes
+		#SBATCH --cpus-per-task=1      # Number of OpenMP threads for each MPI process/rank
+		#SBATCH --time=00:05:00      # Walltime in hh:mm:ss or d-hh:mm:ss
+		#SBATCH --output=output%j.log   # Standard output
+		#SBATCH --output=error%j.log   # Standard error log
+		date
+		sleep 3000
+
+	[root@master ~]# sbatch demo.sh
+	Submitted batch job 7
+ 
+	[root@master ~]# squeue
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	                 6  standard   my_job     root  R       1:29      1 client1
+	                 7  standard   my_job     root  R       0:04      2 client[1-2]
+	
+
+	[root@master ~]# sinfo
+	PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+	standard*    up   infinite      1    mix client2
+	standard*    up   infinite      1  alloc client1
 
 
