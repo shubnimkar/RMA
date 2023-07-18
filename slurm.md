@@ -137,19 +137,19 @@ Reboot the client machine and check whether the share is automatically mounted o
 
 ## PASSWORD LESS SSH
 
-on master
+### on master
 
     ssh-keygen -t rsa
     ssh-copy-id root@client address
 
 
-# on all 3
+### on all 3
 
 * update host files
 * yum install epel-release -y
 * yum install munge munge-libs munge-devel
 
-# master
+### master
 
 [root@master home]# rpm -qa | grep munge
 munge-libs-0.5.11-3.el7.x86_64
@@ -164,7 +164,7 @@ utilize the disks. This gives the random number generator
 a better chance to gain enough entropy.
 Generating a pseudo-random key using /dev/random completed.
 
-TO check the key 
+### To check the key 
 
 [root@master home]# ll /etc/munge/
 total 4
@@ -185,7 +185,8 @@ systemctl status munge
 
 [GET SLURM FROM HERE](https://download.schedmd.com/slurm/slurm-20.11.9.tar.bz2)
 
-ONMASTER 
+### ONMASTER 
+
 wget https://download.schedmd.com/slurm/slurm-20.11.9.tar.bz2
 
 yum install rpm-build -y
@@ -197,23 +198,23 @@ error: Failed build dependencies:
 	perl(ExtUtils::MakeMaker) is needed by slurm-20.11.9-1.el7.x86_64
 	pam-devel is needed by slurm-20.11.9-1.el7.x86_64
 
-on all 3
+### on all 3
 yum install python3 readline-devel perl-ExtUtils-MakeMaker pam-devel gcc mysql-devel -y
 
 TO BUILD REPO (MASTER
 rpmbuild -ta slurm-20.11.9.tar.bz2 
 
-on all 3 
+### on all 3 
 export SLURMUSER=900
 groupadd -g $SLURMUSER slurm
 useradd -m -c "SLURM workload manager" -d /var/lib/slurm -u $SLURMUSER -g slurm -s /bin/bash slurm
 
-ON MASTER
+### vON MASTER
 mkdir /home/rpms
 cd /root/rpmbuild/RPMS/x86_64/
 cp * /home/rpms/
 
-on all 3
+### on all 3
 [root@master rpms]# yum --nogpgcheck localinstall * -y
 
 on client slurmctld and slurmdbd packages are not req 
@@ -225,7 +226,7 @@ TO check packages on all nodes no will be 12
 rpm -qa | grep slurm | wc -l
  
 
-on all 3
+### on all 3
 mkdir /var/spool/slurm
 chown slurm:slurm /var/spool/slurm
 chmod 755 /var/spool/slurm/
@@ -235,7 +236,7 @@ chown slurm:slurm /var/log/slurm
 chmod 755 /var/log/slurm/
 chown -R slurm . /var/log/slurm/
 
-MASTER: 
+### MASTER: 
 [root@master ~]# touch /var/log/slurm/slurmctld.log
 [root@master ~]# chown slurm:slurm /var/log/slurm/slurmctld.log
 [root@master ~]# touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
@@ -364,14 +365,19 @@ UpTime=0-03:28:58
 [root@client2 ~]# systemctl enable slurmd
 [root@client2 ~]# systemctl status slurmd
 
+#### To check is clients are online :
 
+[root@master ~]# sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+standard*    up   infinite      2   idle client[1-2]
 
+#### if nodes are down:
 
+scontrol update node <nodename> state=idle
 
-
-
-
-
+* if it shows `down*`
+restart slurmd and then fire above command
+ 
 
 
 
