@@ -1,3 +1,4 @@
+[link...!!!!](https://github.com/Artlands/Install-Slurm)
 # SLURM.conf
 
 [root@master slurm]# cat /etc/slurm/slurm.conf
