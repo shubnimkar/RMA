@@ -398,7 +398,10 @@ TO check packages on all nodes no will be 12
 * if it shows `down*`
 
 		restart slurmd and then fire above command
- 
+  
+### how to debug error in slurm
+
+	[root@master ~]# slurmctld -Dvv
 
 
 
