@@ -324,11 +324,11 @@
     slurmdbd: debug:  rpc_mgr shutting down
     slurmdbd: Unable to remove pidfile '/var/run/slurmdbd.pid': Permission denied
 
-[root@master ~]# systemctl enable slurmdbd
+`[root@master ~]# systemctl enable slurmdbd`
 
-[root@master ~]# systemctl start slurmdbd
+`[root@master ~]# systemctl start slurmdbd`
 
-[root@master ~]# systemctl status slurmdbd
+`[root@master ~]# systemctl status slurmdbd`
 
     ● slurmdbd.service - Slurm DBD accounting daemon
        Loaded: loaded (/usr/lib/systemd/system/slurmdbd.service; enabled; vendor preset: disabled)
@@ -340,11 +340,11 @@
 
     Jul 18 20:39:06 master systemd[1]: Started Slurm DBD accounting daemon.
 
-[root@master ~]# systemctl enable slurmctld.service
+`[root@master ~]# systemctl enable slurmctld.service`
 
-[root@master ~]# systemctl start slurmctld.service
+`[root@master ~]# systemctl start slurmctld.service`
 
-[root@master ~]# systemctl status slurmctld.service
+`[root@master ~]# systemctl status slurmctld.service`
 
     ● slurmctld.service - Slurm controller daemon
        Loaded: loaded (/usr/lib/systemd/system/slurmctld.service; enabled; vendor preset: disabled)
