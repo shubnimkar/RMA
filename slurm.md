@@ -469,4 +469,8 @@ TO check packages on all nodes no will be 12
 	standard*    up   infinite      1    mix client2
 	standard*    up   infinite      1  alloc client1
 
+	[root@master ~]# squeue
+	        JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	            7  standard   my_job     root  R       3:48      2 client[1-2]
+
 
