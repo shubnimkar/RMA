@@ -200,14 +200,22 @@
 # Create a new file /etc/my.cnf.d/innodb.cnf containing:
 
 `[root@master ~]# vim  /etc/my.cnf.d/innodb.cnf`
-
     
+    [mysqld]
+    innodb_buffer_pool_size=1024M
+    innodb_log_file_size=64M
+    innodb_lock_wait_timeout=900
+    
+# To implement this change you have to shut down the database and move/remove logfiles:
 
-`[root@master ~]# systemctl stop mariadb`
+    [root@master ~]# systemctl stop mariadb
+    
+    [root@master ~]# mv /var/lib/mysql/ib_logfile? /tmp/
+    
+    [root@master ~]# systemctl start mariadb
 
-`[root@master ~]# mv /var/lib/mysql/ib_logfile? /tmp/`
 
-`[root@master ~]# systemctl start mariadb`
+# You can check the current setting in MySQL like so:
 
 `[root@master ~]# mysql`
 
