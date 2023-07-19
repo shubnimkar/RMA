@@ -1,6 +1,6 @@
 # Open-PBS Configuration
 
-### On all nodes
+`On all Nodes`
 
 ## Disable Firewalld
 
@@ -25,7 +25,9 @@
     rsync /etc/hosts root@192.168.100.211:/etc/hosts
     rsync /etc/hosts root@192.168.100.197:/etc/hosts
 
-## Setup password-less SSH (MASTER)
+` ON MASTER`
+
+## Setup password-less SSH 
 
 ssh-keygen -t rsa
 ssh-copy-id root@client address
