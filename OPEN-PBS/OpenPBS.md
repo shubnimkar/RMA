@@ -29,5 +29,8 @@
 
 ## Setup password-less SSH 
 
-ssh-keygen -t rsa
-ssh-copy-id root@client address
+    ssh-keygen -t rsa
+
+Now copy the key to other nodes
+
+    ssh-copy-id root@node address
