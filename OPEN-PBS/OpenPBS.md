@@ -63,6 +63,34 @@ OR
      yum --setopt=group_package_types=mandatory,default,optional group install "Development Tools"
 
 
+-------------------------------------------------------------------------------------------------------------------------------
+history
+
+15  yum --setopt=group_package_types=mandatory,default,optional groupinstall "Development Tools"
+   16  yum group list
+   17  ll
+   18  cd Downloads/
+   19  ll
+   20  cd
+   21  ll
+   22  ll openpbs/
+   23  clear
+   24  ll
+   25  ll openpbs/
+   26  cd openpbs/
+   27  rpmbuild -ba openpbs.spec
+   28  cat openpbs.spec
+   29  cd
+   30  mv openpbs/ openpbs-23.06.06
+   31  cd openpbs-23.06.06/
+   32  rpmbuild -ba openpbs.spec
+   33  cd
+   34  tar -cvf /root/rpmbuild/SOURCES/openpbs-23.06.06.tar.gz openpbs-23.06.06/
+   35  cd openpbs-23.06.06/
+   36  ll
+   37  rpmbuild -ba openpbs.spec
+   38  history
+
 
 
 
