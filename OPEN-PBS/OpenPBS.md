@@ -245,6 +245,40 @@ pbs_comm             pbs_dataservice.bin  pbs_ds_monitor       pbs_ds_password.b
 pbs_dataservice      pbs_demux            pbs_ds_password      pbs_ds_systemd       pbs_idled            pbs_mom              pbs_rcp              pbs_server           pbs_snapshot
 [root@master x86_64]# chmod 4755 /opt/pbs/sbin/pbs_iff /opt/pbs/sbin/pbs_rcp
 
+[root@master x86_64]# systemctl restart pbs
+[root@master x86_64]# systemctl status pbs
+● pbs.service - Portable Batch System
+   Loaded: loaded (/opt/pbs/libexec/pbs_init.d; enabled; vendor preset: disabled)
+   Active: active (running) since Wed 2023-07-19 20:46:58 IST; 6s ago
+     Docs: man:pbs(8)
+  Process: 86055 ExecStart=/opt/pbs/libexec/pbs_init.d start (code=exited, status=0/SUCCESS)
+    Tasks: 9
+   Memory: 27.8M
+   CGroup: /system.slice/pbs.service
+           ├─87028 /opt/pbs/sbin/pbs_comm
+           ├─87034 /opt/pbs/sbin/pbs_sched
+           ├─87091 /opt/pbs/sbin/pbs_ds_monitor monitor
+           ├─87128 /usr/bin/postgres -D /var/spool/pbs/datastore -p 15007
+           ├─87132 postgres: logger process
+           ├─87139 postgres: checkpointer process
+           ├─87140 postgres: writer process
+           ├─87142 postgres: wal writer process
+           ├─87143 postgres: autovacuum launcher process
+           ├─87144 postgres: stats collector process
+           ├─87186 postgres: postgres pbs_datastore 192.168.100.211(44412) idle
+           └─87188 /opt/pbs/sbin/pbs_server.bin
+
+Jul 19 20:46:55 master pbs_init.d[86055]: /opt/pbs/sbin/pbs_comm ready (pid=87028), Proxy Name:master:17001, Threads:4
+Jul 19 20:46:55 master pbs_init.d[86055]: PBS comm
+Jul 19 20:46:55 master pbs_init.d[86055]: PBS sched
+Jul 19 20:46:55 master su[87049]: (to postgres) root on none
+Jul 19 20:46:55 master su[87092]: (to postgres) root on none
+Jul 19 20:46:57 master su[87150]: (to postgres) root on none
+Jul 19 20:46:58 master pbs_init.d[86055]: Connecting to PBS dataservice...connected to PBS dataservice@master
+Jul 19 20:46:58 master pbs_init.d[86055]: Connecting to PBS dataservice...connected to PBS dataservice@master
+Jul 19 20:46:58 master pbs_init.d[86055]: PBS server
+Jul 19 20:46:58 master systemd[1]: Started Portable Batch System.
+
 
 
 
