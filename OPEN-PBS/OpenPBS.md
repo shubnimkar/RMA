@@ -34,3 +34,49 @@
 Now copy the key to other nodes
 
     ssh-copy-id root@node address
+
+## Install GIT and clone openpbs repo (ON MASTER)
+
+    yum install git -y
+
+Clone OpenPBS repo from git hub
+
+    git clone https://github.com/openpbs/openpbs.git
+
+## install Development Tools on a CentOS / RHEL server (ON MASTER)
+
+Type the following yum command as root user:
+
+    yum group install "Development Tools"
+
+If above command failed, try:
+
+    yum groupinstall "Development Tools"
+
+A note about failing groupinstall on CentOS/RHEL 
+To install all the packages belonging to a package group called “Development Tools” use the following command:
+
+         yum --setopt=group_package_types=mandatory,default,optional groupinstall "Development Tools"
+
+OR
+
+         yum --setopt=group_package_types=mandatory,default,optional group install "Development Tools"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
