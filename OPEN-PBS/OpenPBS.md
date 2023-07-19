@@ -56,11 +56,11 @@ If above command failed, try:
 A note about failing groupinstall on CentOS/RHEL 
 To install all the packages belonging to a package group called “Development Tools” use the following command:
 
-         yum --setopt=group_package_types=mandatory,default,optional groupinstall "Development Tools"
+     yum --setopt=group_package_types=mandatory,default,optional groupinstall "Development Tools"
 
 OR
 
-         yum --setopt=group_package_types=mandatory,default,optional group install "Development Tools"
+     yum --setopt=group_package_types=mandatory,default,optional group install "Development Tools"
 
 
 
