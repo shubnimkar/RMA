@@ -279,6 +279,23 @@ Jul 19 20:46:58 master pbs_init.d[86055]: Connecting to PBS dataservice...connec
 Jul 19 20:46:58 master pbs_init.d[86055]: PBS server
 Jul 19 20:46:58 master systemd[1]: Started Portable Batch System.
 
+[root@master x86_64]# cat /etc/pbs.conf
+PBS_EXEC=/opt/pbs
+PBS_SERVER=master
+PBS_START_SERVER=1
+PBS_START_SCHED=1
+PBS_START_COMM=1
+PBS_START_MOM=0
+PBS_HOME=/var/spool/pbs
+PBS_CORE_LIMIT=unlimited
+PBS_SCP=/bin/scp
+[root@master x86_64]# /etc/init.d/pbs
+Usage: pbs --version
+Usage: pbs {start|stop|restart|status}
+[root@master x86_64]# /etc/init.d/pbs status
+pbs_server is pid 87188
+pbs_sched is pid 87034
+pbs_comm is 87028
 
 
 
