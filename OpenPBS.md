@@ -13,7 +13,7 @@
     getenforce
 
 
-## /etc/hosts file 
+## Set-up host config file /etc/hosts file 
 
     192.168.100.211 master master.cdac.in
     192.168.100.210 cn1 cn1.cdac.in
