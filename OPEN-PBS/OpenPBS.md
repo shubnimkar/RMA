@@ -118,9 +118,132 @@ Nothing to do
 To build RPM
 tar -cvf /root/rpmbuild/SOURCES/openpbs-23.06.06.tar.gz openpbs-23.06.06/
 
+In openpbs folder
+rpmbuild -ba openpbs.spec
 
 
+[root@master openpbs-23.06.06]# cd /root/rpmbuild/
+[root@master rpmbuild]# ll
+total 0
+drwxr-xr-x. 3 root root 30 Jul 19 20:30 BUILD
+drwxr-xr-x. 2 root root  6 Jul 19 20:31 BUILDROOT
+drwxr-xr-x. 3 root root 20 Jul 19 20:31 RPMS
+drwxr-xr-x. 2 root root 37 Jul 19 20:07 SOURCES
+drwxr-xr-x. 2 root root  6 Jul 19 20:03 SPECS
+drwxr-xr-x. 2 root root 40 Jul 19 20:31 SRPMS
+[root@master rpmbuild]# cd RPMS/
+[root@master RPMS]# ll
+total 0
+drwxr-xr-x. 2 root root 231 Jul 19 20:31 x86_64
+[root@master RPMS]# cd x86_64/
+[root@master x86_64]# ll
+total 14544
+-rw-r--r--. 1 root root 1757740 Jul 19 20:31 openpbs-client-23.06.06-0.x86_64.rpm
+-rw-r--r--. 1 root root 7577780 Jul 19 20:31 openpbs-debuginfo-23.06.06-0.x86_64.rpm
+-rw-r--r--. 1 root root  508136 Jul 19 20:31 openpbs-devel-23.06.06-0.x86_64.rpm
+-rw-r--r--. 1 root root 2086520 Jul 19 20:31 openpbs-execution-23.06.06-0.x86_64.rpm
+-rw-r--r--. 1 root root 2946428 Jul 19 20:31 openpbs-server-23.06.06-0.x86_64.rpm
+[root@master x86_64]# yum install openpbs-server-23.06.06-0.x86_64.rpm
+Loaded plugins: fastestmirror, langpacks
+Examining openpbs-server-23.06.06-0.x86_64.rpm: openpbs-server-23.06.06-0.x86_64
+Marking openpbs-server-23.06.06-0.x86_64.rpm to be installed
+Resolving Dependencies
+--> Running transaction check
+---> Package openpbs-server.x86_64 0:23.06.06-0 will be installed
+--> Processing Dependency: postgresql-server >= 9.1 for package: openpbs-server-23.06.06-0.x86_64
+Loading mirror speeds from cached hostfile
+ * base: centos.mirror.net.in
+ * extras: centos.mirror.net.in
+ * updates: centos.mirror.net.in
+--> Running transaction check
+---> Package postgresql-server.x86_64 0:9.2.24-8.el7_9 will be installed
+--> Finished Dependency Resolution
 
+Dependencies Resolved
+
+================================================================================================================
+ Package                  Arch          Version                  Repository                                Size
+================================================================================================================
+Installing:
+ openpbs-server           x86_64        23.06.06-0               /openpbs-server-23.06.06-0.x86_64         11 M
+Installing for dependencies:
+ postgresql-server        x86_64        9.2.24-8.el7_9           updates                                  3.8 M
+
+Transaction Summary
+================================================================================================================
+Install  1 Package (+1 Dependent package)
+
+Total size: 14 M
+Total download size: 3.8 M
+Installed size: 27 M
+Is this ok [y/d/N]: y
+Downloading packages:
+postgresql-server-9.2.24-8.el7_9.x86_64.rpm                                              | 3.8 MB  00:00:00
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : postgresql-server-9.2.24-8.el7_9.x86_64                                                      1/2
+  Installing : openpbs-server-23.06.06-0.x86_64                                                             2/2
+*** PBS Installation Summary
+***
+*** Postinstall script called as follows:
+*** /opt/pbs/libexec/pbs_postinstall server 23.06.06 /opt/pbs /var/spool/pbs postgres
+***
+*** No configuration file found.
+*** Creating new configuration file: /etc/pbs.conf
+*** Replacing /etc/pbs.conf with /etc/pbs.conf.23.06.06
+*** /etc/pbs.conf has been created.
+***
+*** Registering PBS as a service.
+Created symlink from /etc/systemd/system/multi-user.target.wants/pbs.service to /usr/lib/systemd/system/pbs.service.
+***
+*** PBS_HOME is /var/spool/pbs
+*** Creating new file /var/spool/pbs/pbs_environment
+*** WARNING: TZ not set in /var/spool/pbs/pbs_environment
+***
+*** The PBS server has been installed in /opt/pbs/sbin.
+*** The PBS scheduler has been installed in /opt/pbs/sbin.
+***
+*** The PBS communication agent has been installed in /opt/pbs/sbin.
+***
+*** The PBS MOM has been installed in /opt/pbs/sbin.
+***
+*** The PBS commands have been installed in /opt/pbs/bin.
+***
+*** End of /opt/pbs/libexec/pbs_postinstall
+  Verifying  : postgresql-server-9.2.24-8.el7_9.x86_64                                                      1/2
+  Verifying  : openpbs-server-23.06.06-0.x86_64                                                             2/2
+
+Installed:
+  openpbs-server.x86_64 0:23.06.06-0
+
+Dependency Installed:
+  postgresql-server.x86_64 0:9.2.24-8.el7_9
+
+Complete!
+[root@master x86_64]# systemctl status pbs
+● pbs.service - Portable Batch System
+   Loaded: loaded (/opt/pbs/libexec/pbs_init.d; enabled; vendor preset: disabled)
+   Active: inactive (dead)
+     Docs: man:pbs(8)
+[root@master x86_64]# vim /etc/pbs.conf
+[root@master x86_64]# etc /etc/pbs.conf
+bash: etc: command not found...
+[root@master x86_64]# cat /etc/pbs.conf
+PBS_EXEC=/opt/pbs
+PBS_SERVER=master
+PBS_START_SERVER=1
+PBS_START_SCHED=1
+PBS_START_COMM=1
+PBS_START_MOM=0
+PBS_HOME=/var/spool/pbs
+PBS_CORE_LIMIT=unlimited
+PBS_SCP=/bin/scp
+[root@master x86_64]# chmod 4755 /opt/pbs/sbin/pbs
+pbs_comm             pbs_dataservice.bin  pbs_ds_monitor       pbs_ds_password.bin  pbsfs                pbs_iff              pbs_probe            pbs_sched            pbs_server.bin       pbs_upgrade_job
+pbs_dataservice      pbs_demux            pbs_ds_password      pbs_ds_systemd       pbs_idled            pbs_mom              pbs_rcp              pbs_server           pbs_snapshot
+[root@master x86_64]# chmod 4755 /opt/pbs/sbin/pbs_iff /opt/pbs/sbin/pbs_rcp
 
 
 
