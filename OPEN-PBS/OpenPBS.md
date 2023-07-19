@@ -93,11 +93,30 @@ history
 
 
 
+[root@master openpbs-23.06.06]# yum install libtool-ltdl-devel hwloc-devel libXt-devel libedit-devel libical-devel ncurses-devel postgresql-devel postgresql-contrib python3-devel  tcl-devel tk-devel zlib-devel expat-devel openssl-devel  -y
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * base: centos.mirror.net.in
+ * extras: centos.mirror.net.in
+ * updates: centos.mirror.net.in
+Package libtool-ltdl-devel-2.4.2-22.el7_3.x86_64 already installed and latest version
+Package hwloc-devel-1.11.8-4.el7.x86_64 already installed and latest version
+Package libXt-devel-1.1.5-3.el7.x86_64 already installed and latest version
+Package libedit-devel-3.0-12.20121213cvs.el7.x86_64 already installed and latest version
+Package libical-devel-3.0.3-2.el7.x86_64 already installed and latest version
+Package ncurses-devel-5.9-14.20130511.el7_4.x86_64 already installed and latest version
+Package postgresql-devel-9.2.24-8.el7_9.x86_64 already installed and latest version
+Package postgresql-contrib-9.2.24-8.el7_9.x86_64 already installed and latest version
+Package python3-devel-3.6.8-19.el7_9.x86_64 already installed and latest version
+Package 1:tcl-devel-8.5.13-8.el7.x86_64 already installed and latest version
+Package 1:tk-devel-8.5.13-6.el7.x86_64 already installed and latest version
+Package zlib-devel-1.2.7-21.el7_9.x86_64 already installed and latest version
+Package expat-devel-2.1.0-15.el7_9.x86_64 already installed and latest version
+Package 1:openssl-devel-1.0.2k-26.el7_9.x86_64 already installed and latest version
+Nothing to do
 
-
-
-
-
+To build RPM
+tar -cvf /root/rpmbuild/SOURCES/openpbs-23.06.06.tar.gz openpbs-23.06.06/
 
 
 
