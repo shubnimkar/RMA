@@ -297,6 +297,14 @@ pbs_server is pid 87188
 pbs_sched is pid 87034
 pbs_comm is 87028
 
+[root@master x86_64]# . /etc/profile.d/pbs.sh
+[root@master x86_64]# which qstat
+/opt/pbs/bin/qstat
+[root@master x86_64]# qstat -B
+Server             Max   Tot   Que   Run   Hld   Wat   Trn   Ext Status
+---------------- ----- ----- ----- ----- ----- ----- ----- ----- -----------
+master               0     0     0     0     0     0     0     0 Active
+[root@master x86_64]#
 
 
 
