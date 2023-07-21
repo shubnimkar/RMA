@@ -1,0 +1,171 @@
+*************************************
+OpenPBS Installation (version:20.0.1)
+*************************************
+
+Link 1: https://github.com/openpbs/openpbs/blob/master/INSTALL
+_____________________________________________________________
+
+On Master:
+_________
+
+ 
+For CentOS-7 systems you should run the following command as root:
+
+# yum install -y gcc make rpm-build libtool hwloc-devel \
+      libX11-devel libXt-devel libedit-devel libical-devel \
+      ncurses-devel perl postgresql-devel postgresql-contrib python3-devel tcl-devel \
+      tk-devel swig expat-devel openssl-devel libXext libXft \
+      autoconf automake gcc-c++
+
+# yum install -y expat libedit postgresql-server postgresql-contrib python3 \
+      sendmail sudo tcl tk libical
+
+
+
+Link 2: https://github.com/openpbs/openpbs/releases/tag/v20.0.1
+_______________________________________________________________
+
+# wget (Source Code)tar.gz from Link 2    		file is downloaded
+
+# mv v20.0.1.tar.gz openpbs-20.0.1.tar.gz		(Only to be done if master is minimal or wget command is used otherwise download using browser)
+
+# yum install libtool-ltdl-devel -y        			(Dependency error : It is needed by openpbs-20.0.1-0.x86_64)
+
+# cd Downloads
+
+# rpmbuild -ta openpbs-20.0.1.tar.gz
+
+# cd /root/rpmbuild/BUILD
+
+# ls									-->  openpbs-20.0.1  (directory visible)
+
+# cd /root/rpmbuild/RPMS/x86_64
+
+# rpm -ivh openpbs-server-20.0.1-0.x86_64.rpm
+
+# cd /etc/
+
+# vi pbs.conf               					(check for server name it should be master change MOM=1)
+
+# /etc/init.d/pbs start
+
+
+# /etc/init.d/pbs status
+
+# . /etc/profile.d/pbs.sh
+
+-----------------------------------------------------------------------------------
+Job submission
+_______________
+
+Now login to any user in the machine (master)
+
+# su - hpcsa
+
+# qsub -I			(Submission of job)
+# qstat
+
+
+
+-----------------------------------------------------------------------------------
+Adding compute nodes to master of openpbs
+
+on master
+----------------------
+# cd /root/rpmbuild/RPMS/x86_64
+
+# cp openpbs-execution-20.0.1-0.x86_64.rpm  /root/home/
+
+on node1
+------------------------------------------------------------------------------------
+# cd /root/home
+
+# rpm -ivh openpbs-execution-20.0.1-0.x86_64.rpm
+
+(install all dependencies)
+
+# yum install hwloc-libs libICE.so.*  libSM.so.* libhwloc.so.* libpython3.6m.so.*  libtcl8.5.so *libtk8.5.so* python3 -y
+
+# rpm -ivh openpbs-execution-20.0.1-0.x86_64.rpm
+
+# vi /etc/pbs.conf  
+
+(change master name)
+
+# vi /var/spool/pbs/mom_priv/config
+
+($clienthost master)
+
+# /etc/init.d/pbs start
+
+# /etc/init.d/pbs status
+
+
+on master
+------------------------------------------------------------------------------------
+
+#pbsnodes -a
+
+# vi /var/spool/pbs/server_priv/nodes          >> new file for entry of nodes 
+		>> node1 np=1
+
+# qmgr -c "create node node1"
+
+# . /etc/profile.d/pbs.sh  (Source similar to xcat)
+
+# pbsnodes -a
+
+------------------------------------------------------------------------------------
+
+Running interactive job on two nodes (master and node 1)
+________________________________________________________
+
+on master   (hpcsa is one of my username)
+_________
+
+# su - hpcsa
+
+# vim script.sh
+
+>>>>>>>>>>> Content of script.sh
+
+			#!/bin/bash
+
+			#PBS -j oe
+
+			#PBS -l nodes=2:ppn=1                    (ppn: process per node)
+
+			#PBS -l walltime=00:15:00
+
+			sleep 120
+>>>>>>>>>>>
+Save and exit
+
+Note:-> Ownership of file must belong to hpcsa
+
+# qsub script.sh
+
+# qstat 
+
+# qstat -ans 
+
+>>>>>>>>>>>>>
+Some more useful Commands
+-------------------------
+# qdel          -> for deletetion of job
+
+_______________________________________________________________
+
+Creating a routing queue (route1) with 'batch' as destination
+---------------------------------------------------------------
+To be done on master
+--------------------
+# qmgr 
+# qmgr: p s
+: create queue route1
+: set queue route1 queue_type = Route
+: set queue route1 acl_host_enable = True
+: set queue route1 route_destinations = batch
+: set queue route1 enabled = True
+: set queue route1 started = True
+
